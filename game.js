@@ -18,8 +18,9 @@ function init() {
     player.position.set(0, 5, 0); // Start the player a bit above the ground
     scene.add(player);
 
-    // Set camera position
-    camera.position.z = 10;
+    // Set camera position to follow the player
+    camera.position.set(0, 5, 10);
+    camera.lookAt(player.position);
 
     // Set up the clock for smooth time-based movement
     clock = new THREE.Clock();
