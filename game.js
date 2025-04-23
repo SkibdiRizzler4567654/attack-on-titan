@@ -15,7 +15,7 @@ function init() {
 
     // Add a simple player (represented as a sphere for now)
     player = new THREE.Mesh(new THREE.SphereGeometry(1), new THREE.MeshBasicMaterial({ color: 0x00ff00 }));
-    player.position.set(0, 0, 0);
+    player.position.set(0, 5, 0); // Start the player a bit above the ground
     scene.add(player);
 
     // Set camera position
