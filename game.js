@@ -1,124 +1,29 @@
-let scene, camera, renderer, player, clock, grapplingHook, grappleTarget, swingVelocity;
-let isGrappling = false;
-let isSwinging = false;
-let grapplePoint = new THREE.Vector3();
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
 
-function init() {
-    // Create the scene and camera
-    scene = new THREE.Scene();
-    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+let paddleWidth = 10;
+let paddleHeight = 100;
 
-    // Set up the renderer
-    renderer = new THREE.WebGLRenderer();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    document.getElementById('game-container').appendChild(renderer.domElement);
+let leftPaddleY = 250;
+let rightPaddleY = 250;
 
-    // Add a simple player (represented as a sphere for now)
-    player = new THREE.Mesh(new THREE.SphereGeometry(1), new THREE.MeshBasicMaterial({ color: 0x00ff00 }));
-    player.position.set(0, 5, 0); // Start the player a bit above the ground
-    scene.add(player);
-
-    // Set camera position to follow the player
-    camera.position.set(0, 5, 10);
-    camera.lookAt(player.position);
-
-    // Set up the clock for smooth time-based movement
-    clock = new THREE.Clock();
-
-    // Create a basic grapple hook (this is just a line for now)
-    grapplingHook = new THREE.Line(
-        new THREE.BufferGeometry().setFromPoints([player.position, player.position]),
-        new THREE.LineBasicMaterial({ color: 0xff0000 })
-    );
-    scene.add(grapplingHook);
-
-    // Create the ground (representing a simple environment for now)
-    let ground = new THREE.Mesh(
-        new THREE.PlaneGeometry(1000, 1000),
-        new THREE.MeshBasicMaterial({ color: 0x555555, side: THREE.DoubleSide })
-    );
-    ground.rotation.x = Math.PI / 2;
-    scene.add(ground);
-
-    // Handle keypress for starting grappling
-    window.addEventListener('keydown', onKeyDown);
-
-    // Start the animation loop
-    animate();
+function drawRect(x, y, w, h, color) {
+  ctx.fillStyle = color;
+  ctx.fillRect(x, y, w, h);
 }
 
-// Handle key inputs (spacebar to grapple)
-function onKeyDown(event) {
-    if (event.code === 'Space') {
-        if (!isGrappling) {
-            initiateGrapple();
-        } else if (isGrappling && !isSwinging) {
-            startSwing();
-        }
-    }
+function draw() {
+  // Clear the canvas
+  drawRect(0, 0, canvas.width, canvas.height, "black");
+
+  // Draw paddles
+  drawRect(10, leftPaddleY, paddleWidth, paddleHeight, "white");
+  drawRect(canvas.width - 20, rightPaddleY, paddleWidth, paddleHeight, "white");
 }
 
-// Initiate grappling
-function initiateGrapple() {
-    // Calculate a random grapple point in the environment (for now, just a random point)
-    let targetX = Math.random() * 50 - 25;
-    let targetZ = Math.random() * 50 - 25;
-    grapplePoint.set(targetX, 5, targetZ); // A height of 5 meters above the ground
-
-    isGrappling = true;
-    grapplingHook.geometry.setFromPoints([player.position, grapplePoint]);
-
-    console.log('Grapple to:', grapplePoint);
+function gameLoop() {
+  draw();
+  requestAnimationFrame(gameLoop);
 }
 
-// Start swinging when the grapple hook connects
-function startSwing() {
-    isSwinging = true;
-    swingVelocity = 0.1; // Swing speed, can be adjusted for more control
-    console.log('Swinging!');
-}
-
-// Update player and camera position
-function updatePlayerMovement() {
-    if (isGrappling) {
-        // Move player toward the grapple point
-        let direction = new THREE.Vector3().subVectors(grapplePoint, player.position);
-        if (direction.length() > 0.5) {
-            direction.normalize();
-            player.position.add(direction.multiplyScalar(0.1)); // Move player towards grapple point
-        } else {
-            console.log('Reached grapple point!');
-            isGrappling = false;
-            if (!isSwinging) {
-                startSwing();
-            }
-        }
-    }
-
-    if (isSwinging) {
-        // Simulate swinging (this is very basic)
-        let swingDirection = new THREE.Vector3().subVectors(grapplePoint, player.position);
-        swingDirection.normalize();
-        player.position.add(swingDirection.multiplyScalar(swingVelocity));
-
-        // Gravity effect (simple downward pull)
-        player.position.y -= 0.05;
-
-        // Adjust the camera to follow the player dynamically
-        camera.position.set(player.position.x, player.position.y + 5, player.position.z + 10);
-        camera.lookAt(player.position);
-    }
-}
-
-function animate() {
-    requestAnimationFrame(animate);
-    let delta = clock.getDelta(); // Get the time difference between frames
-
-    updatePlayerMovement();
-
-    // Render the scene
-    renderer.render(scene, camera);
-}
-
-// Initialize the game
-init();
+gameLoop();
