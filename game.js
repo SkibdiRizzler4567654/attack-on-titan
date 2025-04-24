@@ -38,9 +38,11 @@ document.addEventListener("keydown", function(event) {
   }
   if (event.key === "ArrowUp") {
     upPressed = true;
+    console.log("Up pressed");
   }
   if (event.key === "ArrowDown") {
     downPressed = true;
+    console.log("Down pressed");
   }
 });
 
@@ -53,15 +55,16 @@ document.addEventListener("keyup", function(event) {
   }
   if (event.key === "ArrowUp") {
     upPressed = false;
+    console.log("Up released");
   }
   if (event.key === "ArrowDown") {
     downPressed = false;
+    console.log("Down released");
   }
 });
 
 // Game loop to update paddle positions
 function gameLoop() {
-  // Left paddle movement
   if (wPressed) {
     // Move the left paddle up, but don't go off-screen
     if (leftPaddleY > 0) {
