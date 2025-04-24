@@ -36,7 +36,14 @@ document.addEventListener("keydown", function(event) {
   if (event.key === "s") {
     sPressed = true;
   }
+  if (event.key === "ArrowUp") {
+    upPressed = true;
+  }
+  if (event.key === "ArrowDown") {
+    downPressed = true;
+  }
 });
+
 document.addEventListener("keyup", function(event) {
   if (event.key === "w") {
     wPressed = false;
@@ -44,26 +51,17 @@ document.addEventListener("keyup", function(event) {
   if (event.key === "s") {
     sPressed = false;
   }
-});
-  if (event.key === "up") {
-    upPressed = true;
-  }
-  if (event.key === "down") {
-    downPressed = true;
-  }
-});
-document.addEventListener("keyup", function(event) {
-  if (event.key === "up") {
+  if (event.key === "ArrowUp") {
     upPressed = false;
   }
-  if (event.key === "down") {
+  if (event.key === "ArrowDown") {
     downPressed = false;
   }
 });
 
-
 // Game loop to update paddle positions
 function gameLoop() {
+  // Left paddle movement
   if (wPressed) {
     // Move the left paddle up, but don't go off-screen
     if (leftPaddleY > 0) {
@@ -77,15 +75,17 @@ function gameLoop() {
       leftPaddleY += speed;
     }
   }
-    if (upPressed) {
-    // Move the left paddle up, but don't go off-screen
+
+  // Right paddle movement
+  if (upPressed) {
+    // Move the right paddle up, but don't go off-screen
     if (rightPaddleY > 0) {
       rightPaddleY -= speed;
     }
   }
 
-  if (sPressed) {
-    // Move the left paddle down, but don't go off-screen
+  if (downPressed) {
+    // Move the right paddle down, but don't go off-screen
     if (rightPaddleY + paddleHeight < canvas.height) {
       rightPaddleY += speed;
     }
