@@ -1,6 +1,8 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
+let upPressed = false;
+let downPressed = false;
 let sPressed = false;
 let wPressed = false;
 let paddleWidth = 10;
@@ -43,6 +45,22 @@ document.addEventListener("keyup", function(event) {
     sPressed = false;
   }
 });
+  if (event.key === "up") {
+    upPressed = true;
+  }
+  if (event.key === "down") {
+    downPressed = true;
+  }
+});
+document.addEventListener("keyup", function(event) {
+  if (event.key === "up") {
+    upPressed = false;
+  }
+  if (event.key === "down") {
+    downPressed = false;
+  }
+});
+
 
 // Game loop to update paddle positions
 function gameLoop() {
@@ -57,6 +75,19 @@ function gameLoop() {
     // Move the left paddle down, but don't go off-screen
     if (leftPaddleY + paddleHeight < canvas.height) {
       leftPaddleY += speed;
+    }
+  }
+    if (upPressed) {
+    // Move the left paddle up, but don't go off-screen
+    if (rightPaddleY > 0) {
+      rightPaddleY -= speed;
+    }
+  }
+
+  if (sPressed) {
+    // Move the left paddle down, but don't go off-screen
+    if (rightPaddleY + paddleHeight < canvas.height) {
+      rightPaddleY += speed;
     }
   }
 
